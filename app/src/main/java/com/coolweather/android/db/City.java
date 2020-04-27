@@ -6,7 +6,7 @@ public class City extends DataSupport {
     private int id;      //每个实体类都会有的标识符
     private String cityName;     //省的名字
     private int cityCode;    //省的代号
-    private int provinceCode;/* 以下为对应生成的 getter 和 setter */
+    private int provinceId;/* 以下为对应生成的 getter 和 setter */
 
     public int getId() {
         return id;
@@ -32,11 +32,11 @@ public class City extends DataSupport {
         this.cityCode = cityCode;
     }
 
-    public int getProvinceCode() {
-        return provinceCode;
+    public int getProvinceId() {
+        return provinceId;
     }
 
-    public void setProvinceCode(int provinceCode) {
-        this.provinceCode = provinceCode;
+    public void setProvinceId(int provinceId) {
+        this.provinceId = provinceId;
     }
 }
