@@ -32,10 +32,8 @@ public class Utility {
                 e.printStackTrace();
             }
         }
-
         return false;
     }
-
     /**
      * 解析和处理服务器返回的市级数据
      */
@@ -58,7 +56,6 @@ public class Utility {
         }
         return false;
     }
-
     /**
      * 解析和处理服务器返回的县级数据
      */
@@ -70,18 +67,18 @@ public class Utility {
                     JSONObject countyObject = allCounties.getJSONObject(i);
                     County county = new County();
                     county.setCountyName(countyObject.getString("name"));
-                    county.setWeatherld(countyObject.getString("weather_id"));
-                    county.setCityld(cityId);
+                    county.setWeatherId(countyObject.getString("weather_id"));
+                    county.setCityId(cityId);
                     county.save();
                 }
                 return true;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
         return false;
     }
+
     /**
      * 将返回的JSON数据解析成Weather实体类
      */
@@ -96,5 +93,4 @@ public class Utility {
         }
         return null;
     }
-
 }

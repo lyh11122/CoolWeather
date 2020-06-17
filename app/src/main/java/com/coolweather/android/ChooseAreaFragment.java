@@ -23,7 +23,6 @@ import com.coolweather.android.db.Province;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
-import org.jetbrains.annotations.NotNull;
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
@@ -35,14 +34,13 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class ChooseAreaFragment extends Fragment {
-
     /**
-     * 宏定义试图的不同级别
+     * 宏定义试图的不同级别////
+     * 更新github
      */
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
-
     /**
      * 准备一些控件
      */
@@ -52,23 +50,18 @@ public class ChooseAreaFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
-
     /**
      * 省、市、县的列表
      */
     private List<Province> provinceList;
     private List<City> cityList;
     private List<County> countyList;
-
     // 选中的省
     private Province selectedProvince;
-
     // 选中的市
     private City selectedCity;
-
     // 当前选中的级别
     private int currentLevel;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,7 +73,6 @@ public class ChooseAreaFragment extends Fragment {
         listView.setAdapter(adapter);
         return view;
     }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -95,11 +87,12 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
-                }else if(currentLevel==LEVEL_COUNTY){
-                    String weatherId = countyList.get(position).getWeatherld();
-                    if(getActivity() instanceof WeatherActivity){   // 判断碎片的位置
-                        //该碎片在WeatherActivity中，只需要刷新该活动
-                        WeatherActivity activity = (WeatherActivity)getActivity();
+                } else if(currentLevel==LEVEL_COUNTY){
+                    String weatherId = countyList.get(position).getWeatherId();
+
+                    if(getActivity() instanceof WeatherActivity){//判断碎片的位置
+                        //该碎片在WeatherActivity中，只需刷新该活动
+                        WeatherActivity activity = (WeatherActivity) getActivity();
                         activity.drawerLayout.closeDrawers();
                         activity.swipeRefreshLayout.setRefreshing(true);
                         activity.requestWeather(weatherId);
@@ -109,12 +102,24 @@ public class ChooseAreaFragment extends Fragment {
                         startActivity(intent);
                         getActivity().finish();
                     }
+
+
+
+                }
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentLevel == LEVEL_COUNTY) {
+                    queryCities();
+                } else if (currentLevel == LEVEL_CITY) {
+                    queryProvinces();
                 }
             }
         });
         queryProvinces();   // 加载省级数据
     }
-
     /**
      * 查询全国所有的省，优先从数据库中查，如果没有查询到再到服务器上查
      */
@@ -134,9 +139,7 @@ public class ChooseAreaFragment extends Fragment {
             String address = "http://guolin.tech/api/china";    // 请求地址
             queryFromServer(address, "province");   // 后面会定义此方法
         }
-
     }
-
     /**
      * 查询选中县内所有的市，优先从数据库中查，如果没有查询到再到服务器上查
      */
@@ -153,13 +156,12 @@ public class ChooseAreaFragment extends Fragment {
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_CITY;
-        } else {
+        } else{
             int provinceCode = selectedProvince.getProvinceCode();
             String address = "http://guolin.tech/api/china/" + provinceCode;
             queryFromServer(address, "city");
         }
     }
-
     /**
      * 查询选中市内所有的县，优先从数据库中查询，如果没有查询到就从服务器中查询数据
      */
@@ -183,7 +185,6 @@ public class ChooseAreaFragment extends Fragment {
             queryFromServer(address, "county");
         }
     }
-
     /**
      * 根据传入的地址和类型从服务器中查询省市县数据
      */
@@ -191,7 +192,7 @@ public class ChooseAreaFragment extends Fragment {
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {    // 向服务器发送请求
             @Override
-            public void onFailure(okhttp3.Call call, IOException e) {   //处理加载失败的情况
+            public void onFailure(Call call, IOException e) {   //处理加载失败的情况
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -200,9 +201,8 @@ public class ChooseAreaFragment extends Fragment {
                     }
                 });
             }
-
             @Override
-            public void onResponse(okhttp3.Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 // 接收响应的数据并做对应处理
                 String responseText = response.body().string();
                 boolean result = false;
@@ -230,9 +230,7 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
-
     }
-
     /**
      * 显示进度对话框
      */
@@ -243,7 +241,6 @@ public class ChooseAreaFragment extends Fragment {
             progressDialog.setCanceledOnTouchOutside(false);
         }
     }
-
     /**
      * 关闭进度对话框
      */
@@ -252,5 +249,4 @@ public class ChooseAreaFragment extends Fragment {
             progressDialog.dismiss();
         }
     }
-
 }
